@@ -5,11 +5,18 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
+	"github.com/mhdianrush/go-api-consuming/controllers"
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
 	r := mux.NewRouter()
+
+	r.HandleFunc("/", controllers.Index)
+	r.HandleFunc("/posts", controllers.Index)
+	r.HandleFunc("/post/create", controllers.Create)
+	r.HandleFunc("/post/store", controllers.Store)
+	r.HandleFunc("/post/delete", controllers.Delete)
 
 	logger := logrus.New()
 
