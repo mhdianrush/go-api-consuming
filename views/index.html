@@ -10,6 +10,12 @@
       integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
       crossorigin="anonymous"
     />
+    <style>
+      thead {
+        text-align: center;
+        vertical-align: middle;
+      }
+    </style>
   </head>
   <body>
     <div class="container mt-5">
@@ -19,14 +25,31 @@
       <table class="table table-striped table-hover">
         <thead>
           <tr>
-            <th>Post ID</th>
-            <th>Post Title</th>
-            <th>Post Body</th>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Body</th>
             <th>Action</th>
           </tr>
         </thead>
 
-        <tbody></tbody>
+        <tbody>
+          {{ range .post }}
+          <tr>
+            <td>{{ .Id }}</td>
+            <td>{{ .Title }}</td>
+            <td>{{ .Body }}</td>
+            <td width="150px">
+              <a href="/post/delete?id={{ .Id }}" class="btn btn-sm btn-danger"
+                >Delete</a
+              >
+              <a href="/post/create?id={{ .Id }}" class="btn btn-sm btn-warning"
+                >Edit</a
+              >
+            </td>
+          </tr>
+
+          {{ end }}
+        </tbody>
       </table>
     </div>
   </body>
