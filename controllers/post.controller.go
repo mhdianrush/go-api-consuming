@@ -1,8 +1,14 @@
 package controllers
 
 import (
+	"encoding/json"
+	"html/template"
 	"net/http"
+
+	"github.com/sirupsen/logrus"
 )
+
+var logger = logrus.New()
 
 // field based on JSON Placeholder
 type Post struct {
@@ -12,8 +18,32 @@ type Post struct {
 	Body   string `json:"body"`
 }
 
-func Index(w http.ResponseWriter, r *http.Request) {
+var basedOnURL = "https://jsonplaceholder.typicode.com"
 
+func Index(w http.ResponseWriter, r *http.Request) {
+	var posts []Post
+
+	response, err := http.Get(basedOnURL + "/posts")
+	if err != nil {
+		logger.Println(err)
+	}
+	defer response.Body.Close()
+
+	decoder := json.NewDecoder(response.Body)
+	err = decoder.Decode(&posts)
+	if err != nil {
+		logger.Println(err)
+	}
+
+	data := map[string]any{
+		"post": posts,
+	}
+	
+	temp, err := template.ParseFiles("views/index.html")
+	if err != nil {
+		panic(err)
+	}
+	temp.Execute(w, data)
 }
 
 func Create(w http.ResponseWriter, r *http.Request) {
