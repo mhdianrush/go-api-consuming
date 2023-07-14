@@ -3,8 +3,10 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"net/http"
+	"strconv"
 
 	"github.com/sirupsen/logrus"
 )
@@ -78,9 +80,11 @@ func Create(w http.ResponseWriter, r *http.Request) {
 func Store(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
+	id := r.FormValue("post_id")
+	idInt, _ := strconv.ParseInt(id, 10, 64)
+
 	newpost := Post{
-		Id: 0,
-		// Id = 0 is just an example, the real value will follow next when Click Submit
+		Id:     idInt,
 		Title:  r.FormValue("title"),
 		Body:   r.FormValue("body"),
 		UserId: 1,
@@ -92,13 +96,29 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	}
 
 	buffer := bytes.NewBuffer(jsonValue)
-	req, err := http.NewRequest(http.MethodPost, basedOnURL+"/posts", buffer)
-	if err != nil {
-		logger.Println(err)
+
+	var req *http.Request
+
+	if id != "" {
+		// Update Data
+		fmt.Println("Update Process")
+		req, err = http.NewRequest(http.MethodPut, basedOnURL+"/posts/"+id, buffer)
+		if err != nil {
+			logger.Println(err)
+		}
+	} else {
+		// create data
+		fmt.Println("Create Process")
+		req, err = http.NewRequest(http.MethodPost, basedOnURL+"/posts", buffer)
+		if err != nil {
+			logger.Println(err)
+		}
 	}
+
 	req.Header.Set("Content-Type", "application/json")
 
 	httpClient := &http.Client{}
+	// must pointer
 	res, err := httpClient.Do(req)
 	if err != nil {
 		logger.Println(err)
@@ -114,11 +134,30 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println(res.StatusCode)
 	// fmt.Println(res.Status)
 	// fmt.Println(postResponse)
-	if res.StatusCode == 201 {
+	if res.StatusCode == 201 || res.StatusCode == 200 {
 		http.Redirect(w, r, "/posts", http.StatusSeeOther)
 	}
 }
 
 func Delete(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
 
+	req, err := http.NewRequest(http.MethodDelete, basedOnURL+"/posts/"+id, nil)
+	if err != nil {
+		logger.Println(err)
+	}
+
+	httpClient := &http.Client{}
+	response, err := httpClient.Do(req)
+	if err != nil {
+		logger.Println(err)
+	}
+	defer response.Body.Close()
+
+	fmt.Println(response.StatusCode)
+	fmt.Println(response.Status)
+
+	if response.StatusCode == 200 {
+		http.Redirect(w, r, "/posts", http.StatusSeeOther)
+	}
 }
