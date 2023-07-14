@@ -38,16 +38,20 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	data := map[string]any{
 		"post": posts,
 	}
-	
+
 	temp, err := template.ParseFiles("views/index.html")
 	if err != nil {
-		panic(err)
+		logger.Println(err)
 	}
 	temp.Execute(w, data)
 }
 
 func Create(w http.ResponseWriter, r *http.Request) {
-
+	temp, err := template.ParseFiles("views/create.html")
+	if err != nil {
+		logger.Println(err)
+	}
+	temp.Execute(w, nil)
 }
 
 func Store(w http.ResponseWriter, r *http.Request) {
