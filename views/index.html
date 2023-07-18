@@ -18,13 +18,42 @@
     </style>
   </head>
   <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-dark">
+      <div class="container">
+        <a class="navbar-brand text-light" href=""
+          >JSON Placeholder API Consuming</a
+        >
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active text-light" href=""
+                >Created By: mhdianrush@gmail.com</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- End of Navbar -->
     <div class="container mt-5">
       <h3>Posts List</h3>
       <a href="/post/create" class="btn btn-sm btn-primary">Add Data</a>
       <hr />
       <table class="table table-striped table-hover">
         <thead>
-          <tr>
+          <tr class="table-warning">
             <th>Id</th>
             <th>Title</th>
             <th>Body</th>
@@ -34,7 +63,7 @@
 
         <tbody>
           {{ range .post }}
-          <tr>
+          <tr class="table-success">
             <td>{{ .Id }}</td>
             <td>{{ .Title }}</td>
             <td>{{ .Body }}</td>
